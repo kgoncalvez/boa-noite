@@ -1,44 +1,45 @@
-import requests
-from bs4 import BeautifulSoup
-import os
-from urllib.parse import urljoin, urlparse
-
-def baixar_pagina(url, diretorio):
-    resposta = requests.get(url)
-    resposta.raise_for_status()
-    
-    soup = BeautifulSoup(resposta.text, 'html.parser')
-    
-    if not os.path.exists(diretorio):
-        os.makedirs(diretorio)
-    
-    # Salvar o HTML
-    html_path = os.path.join(diretorio, 'index.html')
-    with open(html_path, 'w', encoding='utf-8') as f:
-        f.write(soup.prettify())
-    
-    # Baixar e salvar CSS
-    for link in soup.find_all('link', href=True):
-        href = link['href']
-        if href.endswith('.css'):
-            css_url = urljoin(url, href)
-            css_resposta = requests.get(css_url)
-            css_resposta.raise_for_status()
-            
-            css_path = os.path.join(diretorio, os.path.basename(href))
-            with open(css_path, 'w', encoding='utf-8') as f:
-                f.write(css_resposta.text)
-            
-            link['href'] = os.path.basename(href)
-    
-    # Atualizar o HTML com os caminhos relativos para CSS
-    with open(html_path, 'w', encoding='utf-8') as f:
-        f.write(soup.prettify())
-
-    print(f"Páginas espelhadas salvas em {diretorio}")
-
-# URL da página que você quer espelhar
-url = 'https://www.google.com'
-diretorio = 'pagina_google_espelhada'
-
-baixar_pagina(url, diretorio)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página com Amendoim e Música</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .texto-musica {
+            font-size: 1.5em;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amendoim e Música</h1>
+        <img src="https://via.placeholder.com/800x600.png?text=Amendoim" alt="Amendoim">
+        <div class="texto-musica">
+            <p>Sorriso, Sou Rei - Natiruts</p>
+            <p>Quando eu vejo a luz do sol<br>
+               Eu sinto a paz em meu coração<br>
+               A vida é bela, e eu vou aproveitar<br>
+               Cada momento que ela me dá</p>
+        </div>
+    </div>
+</body>
+</html>
